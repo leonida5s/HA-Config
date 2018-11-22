@@ -1,0 +1,5 @@
+  audio_output:
+    name: Audio Output
+    options:
+      - "TV"
+      - "Surround Sound"

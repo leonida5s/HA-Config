@@ -6,19 +6,20 @@
 !*.yaml
 !.gitignore
 !*.md
+!automation
+!includes
+!custom_components
 
 # Ignore folders.
 .storage
 .cloud
 .google.token
 .www
-.c9
-.addons
-.backup
-.share
-.ssl
 
 # Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
 ip_bans.yaml
 secrets.yaml
 known_devices.yaml
+customize.yaml
+groups.yaml
+scripts.yaml

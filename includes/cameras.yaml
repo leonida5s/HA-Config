@@ -1,0 +1,11 @@
+ - platform: mqtt
+   topic: zanzito/nexus7/picture
+   name: Nexus 7 Camera
+ - platform: generic
+   still_image_url: http://www.bom.gov.au/radar/IDR714.gif?{{ now().strftime("%Y%m%d%H%M") }}00
+   name: RainRadar
+   friendly_name: Rain Radar
+   limit_refetch_to_url_change: true
+ - platform: generic
+   still_image_url: http://weather.trevandsteve.com/snapshot1.jpg
+   name: Sydney

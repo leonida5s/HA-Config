@@ -1,0 +1,7 @@
+  - name: HTML5_notification
+    platform: html5
+    gcm_api_key: !secret gcm_key
+    gcm_sender_id: !secret gcm_sender
+  - name: Google Assistant
+    platform: rest
+    resource: http://192.168.0.167:5000/broadcast_message

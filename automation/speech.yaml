@@ -1,0 +1,112 @@
+- alias: 'Personalised welcome home greeting'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_window_sensor_158d00024670ee
+  condition:
+    condition: template
+    value_template: "{{ trigger.from_state.state == 'on' or trigger.from_state.state == 'off' or trigger.from_state.state == 'open' or trigger.from_state.state == 'closed' }}"
+  action:
+    - service: media_player.volume_set
+      data_template:
+        entity_id: media_player.bedroom_speaker,media_player.dining_room_speaker,media_player.office_speaker
+        volume_level: 0.4
+    # - delay: '00:00:03'
+    - service: tts.google_say
+      data_template:
+        entity_id: media_player.dining_room_speaker
+        message: >            
+          {% if (trigger.entity_id == 'binary_sensor.door_window_sensor_158d00024670ee') and trigger.from_state.state == 'off' and trigger.to_state.state == 'on' %}          
+            {% for state in [states.binary_sensor.leo_presence, states.binary_sensor.rebecca_presence] if (state.state == 'on' and ((as_timestamp(now()) - as_timestamp(state.last_changed)) / 60) < 5) %}
+              {%- if loop.first %}{{ [ "Welcome back,","Great to see you again, ", "Welcome home,","You're a sight for sore eyes,","Hooray! It's ","Nice to have you back,","Delighted to have you back,"] | random }}
+                {% elif loop.last %} and
+                {% else %},
+              {% endif -%}
+              {{ state.name }}
+            {%- endfor %}
+               {% if states.binary_sensor.leo_presence.state == 'on' and (((as_timestamp(now()) - as_timestamp(states.binary_sensor.leo_presence.last_changed)) / 60) < 5) or (((as_timestamp(now()) - as_timestamp(states.binary_sensor.rebecca_presence.last_changed)) / 60) < 5) %}   
+               ". The time is {% set time = now().strftime('%I %M %p').split(' ') %} {{ time[0]|int }} {{ time[1]|int }} {{ time[2] }}. Indoor Temperature is {{states('sensor.temperature_158d000247eb48')|round(0)}} degrees."
+               {% endif -%}
+              {% if states.binary_sensor.leo_presence.state == 'on' and (((as_timestamp(now()) - as_timestamp(states.binary_sensor.leo_presence.last_changed)) / 60) > 5) and (((as_timestamp(now()) - as_timestamp(states.binary_sensor.rebecca_presence.last_changed)) / 60) < 5) %}
+              "Leo is also at home"
+              {% elif states.binary_sensor.rebecca_presence.state == 'on' and (((as_timestamp(now()) - as_timestamp(states.binary_sensor.rebecca_presence.last_changed)) / 60) > 5) and (((as_timestamp(now()) - as_timestamp(states.binary_sensor.leo_presence.last_changed)) / 60) < 5) %}
+              "Rebecca is also at home"
+              {% elif states.binary_sensor.leo_presence.state == 'on' and (((as_timestamp(now()) - as_timestamp(states.binary_sensor.leo_presence.last_changed)) / 60) < 5) and (((as_timestamp(now()) - as_timestamp(states.binary_sensor.rebecca_presence.last_changed)) / 60) < 5) %}
+              "No one else is home"
+              {% endif -%}             
+          {% endif %}         
+        cache: false
+#    - delay: '00:00:04'
+#    - service: tts.google_say
+#      entity_id: media_player.dining_room_speaker
+#      data_template:
+#        message: "The time is {% set time = now().strftime('%I %M %p').split(' ') %} {{ time[0]|int }} {{ time[1]|int }} {{ time[2] }}. Indoor Temperature is {{states('sensor.temperature_158d000247eb48')|round(0)}} degrees"
+#        cache: false
+- alias: 'Warmer notification'
+  trigger:
+    platform: state
+    entity_id: sensor.warmer_outside
+    from: 'No'
+    to: 'Yes'
+  condition:
+    condition: time
+    after: '09:00:00'
+    before: '23:00:00'
+  action:
+    - service: media_player.volume_set
+      data_template:
+        entity_id: media_player.home_group
+        volume_level: 0.4
+    - service: tts.google_say
+      data_template:
+        entity_id: media_player.dining_room_speaker,media_player.bedroom_speaker
+        message: 'Climate notification'
+    - delay: '00:00:03'        
+    - service: tts.google_say
+      data_template:
+        entity_id: media_player.dining_room_speaker,media_player.bedroom_speaker
+        message: 'It is now warmer outside'
+- alias: 'Cooler notification'
+  trigger:
+    platform: state
+    entity_id: sensor.warmer_outside
+    from: 'Yes'
+    to: 'No'
+  condition:
+    condition: time
+    after: '09:00:00'
+    before: '23:00:00'
+  action:
+    - service: media_player.volume_set
+      data_template:
+        entity_id: media_player.home_group
+        volume_level: 0.4
+    - service: tts.google_say
+      data_template:
+        entity_id: media_player.dining_room_speaker,media_player.bedroom_speaker
+        message: 'Climate notification'
+    - delay: '00:00:03'   
+    - service: tts.google_say
+      data_template:
+        entity_id: media_player.dining_room_speaker,media_player.bedroom_speaker
+        message: 'It is now cooler outside'        
+        
+# - alias: 'Testing Broadcast'
+  # trigger:
+    # platform: state
+    # entity_id: sensor.warmer_outside
+    # from: 'No'
+    # to: 'Yes'
+  # action:
+    # - service: media_player.volume_mute
+      # data_template:
+        # entity_id: media_player.office_speaker
+        # is_volume_muted: True
+    # - service: notify.google_assistant
+      # data:
+        # title: "Climate Notification"
+        # message: "The sun is hot"
+    # - service: media_player.volume_mute
+      # data_template:
+        # entity_id: media_player.office_speaker
+        # is_volume_muted: False     
+        

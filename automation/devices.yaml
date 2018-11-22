@@ -1,0 +1,46 @@
+
+- alias: Maintain Dashboard battery Min
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.nexus_7_battery
+    below: 31
+  action:
+    - service: switch.turn_on
+      entity_id: switch.plug_158d0002410b4c  
+    # - wait_template: "{{ states.sensor.nexus_7_battery.state|int > 79 }}"
+    # - service: switch.turn_off
+      # entity_id: switch.plug_158d0002410b4c
+
+- alias: Maintain Dashboard battery Max
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.nexus_7_battery
+    above: 84
+  action:
+    - service: switch.turn_off
+      entity_id: switch.plug_158d0002410b4c       
+      
+- alias: Turn on dashboard screen when living motion
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dlink_motion_sensor
+    from: 'off'
+    to: 'on'
+  action:
+    - service: display.turn_on
+      entity_id: display.ha_dashboard_tablet
+      
+- alias: Turn off dashboard screen when no living motion
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dlink_motion_sensor
+    from: 'on'
+    to: 'off'
+    for:
+      minutes: 2
+  action:
+    - service: display.turn_off
+      entity_id: display.ha_dashboard_tablet
+      
+      
+      

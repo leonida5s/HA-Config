@@ -1,0 +1,16 @@
+  - platform: ping
+    interval_seconds: 30
+    consider_home: 600
+    hosts:
+     leo_pixel2xl: 192.168.0.189
+     rebecca_pixel2: 192.168.0.138
+     
+  - platform: google_maps
+    username: !secret google_map_user
+    password: !secret google_map_pw
+    
+  - platform: bluetooth_tracker
+    consider_home: 600
+    new_device_defaults:
+      track_new_devices: False
+      hide_if_away: False

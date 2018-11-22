@@ -1,0 +1,5 @@
+  - platform: group
+    name: Kitchen
+    entities:
+      - light.lifx_d073d5395902
+      - light.lifx_d073d53964ab

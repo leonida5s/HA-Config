@@ -1,0 +1,78 @@
+  - alias: Delete camera photos older than 7 days
+    trigger:
+      platform: time
+      at: '03:00:00'
+    condition:
+      - condition: time
+        weekday:
+          - mon
+    action:
+      service: shell_command.delete_photos
+
+  - alias: Daily Dropbox backup
+    trigger:
+      platform: time
+      at: '3:30:00'
+    action:
+      - service: hassio.snapshot_full
+        data_template:
+          name: Automated Backup {{ now().strftime('%Y-%m-%d') }}
+      - delay: '00:10:00'
+      - service: hassio.addon_stdin
+        data_template:
+          addon: "7be23ff5_dropbox_sync"
+          input: {"command":"upload"}
+          
+  - alias: Automatic Theme Change
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id: sun.sun
+        to: above_horizon
+      - platform: state
+        entity_id: sun.sun
+        to: below_horizon
+    action:
+      - service_template: frontend.set_theme
+        data_template:
+          name: >
+            {% if states.sun.sun.state == "above_horizon" %}
+              default
+            {% else %}
+              dark_theme
+            {% endif %} 
+            
+  - alias: Update notification
+    trigger:
+      platform: state
+      entity_id: updater.updater
+    action:
+      - service: notify.html5_notification
+        data:
+          message: "Update for Home Assistant is available"
+          title: "Home Assistant"
+      - service: persistent_notification.create
+        data:
+          message: "Update for Home Assistant is available"
+          title: "Home Assistant"        
+
+  - alias: Notify for new devices
+    trigger:
+      platform: event
+      event_type: device_tracker_new_device
+    action:
+      - service: notify.html5
+        data_template:
+          message: >
+            New device:
+            {{trigger.event.data.host_name}}
+            ({{trigger.event.data.entity_id}})
+          title: "Home Assistant"     
+      - service: persistent_notification.create
+        data_template:
+          message: >
+            New device:
+            {{trigger.event.data.host_name}}
+            ({{trigger.event.data.entity_id}})
+          title: "Home Assistant"

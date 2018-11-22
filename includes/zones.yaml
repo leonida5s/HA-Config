@@ -1,0 +1,9 @@
+  - name: Home
+    latitude: -33.861012
+    longitude: 151.040420
+    radius: 200
+    
+  - name: Leo - Work
+    latitude: !secret work_latitude
+    longitude: !secret work_longitude
+    radius: 100

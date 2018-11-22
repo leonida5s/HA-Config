@@ -1,0 +1,460 @@
+  - platform: bom
+    station: IDN60901.94765
+    name: Lidcombe
+    monitored_conditions:
+      - air_temp
+      - cloud
+      - rain_trace
+      - rel_hum
+      - wind_spd_kmh
+      - press      
+  - platform: mqtt
+    name: "Nexus 7 Battery"
+    state_topic: "zanzito/nexus7/battery_level"
+    qos: 0
+    unit_of_measurement: "%"
+  - platform: speedtest
+    server_id: 2173
+    minute: 30
+    hour:
+      - 0
+      - 6
+      - 12
+      - 18
+    monitored_conditions:
+      - ping
+      - download
+      - upload
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+        arg: /home
+      - type: memory_use_percent
+      - type: processor_use
+      - type: network_in
+        arg: eth0
+      - type: network_out
+        arg: eth0   
+      - type: ipv4_address
+        arg: eth0
+      - type: last_boot
+      - type: since_last_boot
+  - platform: time_date
+    display_options:
+      - 'time'
+      - 'date'
+  - platform: darksky
+    api_key: !secret darksky_key
+    forecast:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+    monitored_conditions:
+      # - summary
+      - temperature_low
+      - temperature_high
+      - precip_probability
+      - daily_summary
+      - icon
+      - hourly_summary
+      - precip_intensity_max
+      - uv_index
+      # tileboard
+      # - temperature
+      # - summary
+
+  # - platform: season
+  - platform: template
+    sensors:
+      weekday:
+        friendly_name: 'Weekday'
+        value_template: '{{ now().strftime("%A") }}'
+      forecast_today:
+        friendly_name: "Today's Forecast"
+        value_template: >
+          {{states.sensor.dark_sky_daytime_high_temperature.state|round(0)}}°/{{states.sensor.dark_sky_overnight_low_temperature.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability.state|round(0)}}%
+        icon_template: >-
+          {% if is_state("sensor.dark_sky_icon", "clear-day") %}
+            mdi:weather-sunny
+          {% elif is_state("sensor.dark_sky_icon", "clear-night") %}
+            mdi:weather-night
+          {% elif is_state("sensor.dark_sky_icon", "cloudy") %}
+            mdi:weather-cloudy   
+          {% elif is_state("sensor.dark_sky_icon", "rain") %}
+            mdi:weather-pouring        
+          {% elif is_state("sensor.dark_sky_icon", "sleet") %}
+            mdi:weather-snowy-rain
+          {% elif is_state("sensor.dark_sky_icon", "snow") %}
+            mdi:weather-snowy
+          {% elif is_state("sensor.dark_sky_icon", "wind") %}
+            mdi:weather-windy
+          {% elif is_state("sensor.dark_sky_icon", "fog") %}
+            mdi:weather-fog
+          {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-day") %}
+            mdi:weather-partlycloudy
+          {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-night") %}
+            mdi:weather-partlycloudy            
+          {% else %}
+            error
+          {% endif %}    
+      forecast_1:
+        friendly_name: 'Tomorrow'
+        value_template: >          
+          {{states.sensor.dark_sky_daytime_high_temperature_1.state|round(0)}}°/{{states.sensor.dark_sky_overnight_low_temperature_1.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_1.state|round(0)}}%
+        icon_template: >-
+          {% if is_state("sensor.dark_sky_icon_1", "clear-day") %}
+            mdi:weather-sunny
+          {% elif is_state("sensor.dark_sky_icon_1", "clear-night") %}
+            mdi:weather-night
+          {% elif is_state("sensor.dark_sky_icon_1", "cloudy") %}
+            mdi:weather-cloudy   
+          {% elif is_state("sensor.dark_sky_icon_1", "rain") %}
+            mdi:weather-pouring        
+          {% elif is_state("sensor.dark_sky_icon_1", "sleet") %}
+            mdi:weather-snowy-rain
+          {% elif is_state("sensor.dark_sky_icon_1", "snow") %}
+            mdi:weather-snowy
+          {% elif is_state("sensor.dark_sky_icon_1", "wind") %}
+            mdi:weather-windy
+          {% elif is_state("sensor.dark_sky_icon_1", "fog") %}
+            mdi:weather-fog
+          {% elif is_state("sensor.dark_sky_icon_1", "partly-cloudy-day") %}
+            mdi:weather-partlycloudy
+          {% elif is_state("sensor.dark_sky_icon_1", "partly-cloudy-night") %}
+            mdi:weather-partlycloudy            
+          {% else %}
+            error
+          {% endif %}
+    
+      forecast_2:
+        friendly_name: 'Second'
+        value_template: >          
+          {{states.sensor.dark_sky_daytime_high_temperature_2.state|round(0)}}°/{{states.sensor.dark_sky_overnight_low_temperature_2.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_2.state|round(0)}}%
+        icon_template: >-
+          {% if is_state("sensor.dark_sky_icon_2", "clear-day") %}
+            mdi:weather-sunny
+          {% elif is_state("sensor.dark_sky_icon_2", "clear-night") %}
+            mdi:weather-night
+          {% elif is_state("sensor.dark_sky_icon_2", "cloudy") %}
+            mdi:weather-cloudy   
+          {% elif is_state("sensor.dark_sky_icon_2", "rain") %}
+            mdi:weather-pouring        
+          {% elif is_state("sensor.dark_sky_icon_2", "sleet") %}
+            mdi:weather-snowy-rain 
+          {% elif is_state("sensor.dark_sky_icon_2", "snow") %}
+            mdi:weather-snowy
+          {% elif is_state("sensor.dark_sky_icon_2", "wind") %}
+            mdi:weather-windy
+          {% elif is_state("sensor.dark_sky_icon_2", "fog") %}
+            mdi:weather-fog
+          {% elif is_state("sensor.dark_sky_icon_2", "partly-cloudy-day") %}
+            mdi:weather-partlycloudy
+          {% elif is_state("sensor.dark_sky_icon_2", "partly-cloudy-night") %}
+            mdi:weather-partlycloudy            
+          {% else %}
+            error
+          {% endif %}
+                 
+      forecast_3:
+        friendly_name: 'Third'
+        value_template: >          
+          {{states.sensor.dark_sky_daytime_high_temperature_3.state|round(0)}}°/{{states.sensor.dark_sky_overnight_low_temperature_3.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_3.state|round(0)}}%
+        icon_template: >-
+          {% if is_state("sensor.dark_sky_icon_3", "clear-day") %}
+            mdi:weather-sunny
+          {% elif is_state("sensor.dark_sky_icon_3", "clear-night") %}
+            mdi:weather-night
+          {% elif is_state("sensor.dark_sky_icon_3", "cloudy") %}
+            mdi:weather-cloudy   
+          {% elif is_state("sensor.dark_sky_icon_3", "rain") %}
+            mdi:weather-pouring        
+          {% elif is_state("sensor.dark_sky_icon_3", "sleet") %}
+            mdi:weather-snowy-rain 
+          {% elif is_state("sensor.dark_sky_icon_3", "snow") %}
+            mdi:weather-snowy
+          {% elif is_state("sensor.dark_sky_icon_3", "wind") %}
+            mdi:weather-windy
+          {% elif is_state("sensor.dark_sky_icon_3", "fog") %}
+            mdi:weather-fog
+          {% elif is_state("sensor.dark_sky_icon_3", "partly-cloudy-day") %}
+            mdi:weather-partlycloudy
+          {% elif is_state("sensor.dark_sky_icon_3", "partly-cloudy-night") %}
+            mdi:weather-partlycloudy
+          {% else %}
+            error
+          {% endif %}
+        
+      forecast_4:
+        friendly_name: 'Fourth'
+        value_template: >          
+          {{states.sensor.dark_sky_daytime_high_temperature_4.state|round(0)}}°/{{states.sensor.dark_sky_overnight_low_temperature_4.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_4.state|round(0)}}%
+        icon_template: >-
+          {% if is_state("sensor.dark_sky_icon_4", "clear-day") %}
+            mdi:weather-sunny
+          {% elif is_state("sensor.dark_sky_icon_4", "clear-night") %}
+            mdi:weather-night            
+          {% elif is_state("sensor.dark_sky_icon_4", "cloudy") %}
+            mdi:weather-cloudy   
+          {% elif is_state("sensor.dark_sky_icon_4", "rain") %}
+            mdi:weather-pouring        
+          {% elif is_state("sensor.dark_sky_icon_4", "sleet") %}
+            mdi:weather-snowy-rain 
+          {% elif is_state("sensor.dark_sky_icon_4", "snow") %}
+            mdi:weather-snowy
+          {% elif is_state("sensor.dark_sky_icon_4", "wind") %}
+            mdi:weather-windy
+          {% elif is_state("sensor.dark_sky_icon_4", "fog") %}
+            mdi:weather-fog
+          {% elif is_state("sensor.dark_sky_icon_4", "partly-cloudy-day") %}
+            mdi:weather-partlycloudy
+          {% elif is_state("sensor.dark_sky_icon_4", "partly-cloudy-night") %}
+            mdi:weather-partlycloudy
+          {% else %}
+            error
+          {% endif %}
+
+      forecast_5:
+        friendly_name: 'Fifth'
+        value_template: >
+          {{states.sensor.dark_sky_daytime_high_temperature_5.state|round(0)}}°/{{states.sensor.dark_sky_overnight_low_temperature_5.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_5.state|round(0)}}%
+        icon_template: >-
+          {% if is_state("sensor.dark_sky_icon_5", "clear-day") %}
+            mdi:weather-sunny
+          {% elif is_state("sensor.dark_sky_icon_5", "clear-night") %}
+            mdi:weather-night
+          {% elif is_state("sensor.dark_sky_icon_5", "cloudy") %}
+            mdi:weather-cloudy   
+          {% elif is_state("sensor.dark_sky_icon_5", "rain") %}
+            mdi:weather-pouring        
+          {% elif is_state("sensor.dark_sky_icon_5", "sleet") %}
+            mdi:weather-snowy-rain 
+          {% elif is_state("sensor.dark_sky_icon_5", "snow") %}
+            mdi:weather-snowy
+          {% elif is_state("sensor.dark_sky_icon_5", "wind") %}
+            mdi:weather-windy
+          {% elif is_state("sensor.dark_sky_icon_5", "fog") %}
+            mdi:weather-fog
+          {% elif is_state("sensor.dark_sky_icon_5", "partly-cloudy-day") %}
+            mdi:weather-partlycloudy
+          {% elif is_state("sensor.dark_sky_icon_5", "partly-cloudy-night") %}
+            mdi:weather-partlycloudy
+          {% else %}
+            error
+          {% endif %}
+           
+      forecast_6:
+        friendly_name: 'Sixth'
+        value_template: >          
+            {{states.sensor.dark_sky_daytime_high_temperature_6.state|round(0)}}°/{{states.sensor.dark_sky_overnight_low_temperature_6.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_6.state|round(0)}}%
+        icon_template: >-
+          {% if is_state("sensor.dark_sky_icon_6", "clear-day") %}
+            mdi:weather-sunny
+          {% elif is_state("sensor.dark_sky_icon_6", "clear-night") %}
+            mdi:weather-night
+          {% elif is_state("sensor.dark_sky_icon_6", "cloudy") %}
+            mdi:weather-cloudy   
+          {% elif is_state("sensor.dark_sky_icon_6", "rain") %}
+            mdi:weather-pouring        
+          {% elif is_state("sensor.dark_sky_icon_6", "sleet") %}
+            mdi:weather-snowy-rain  
+          {% elif is_state("sensor.dark_sky_icon_6", "snow") %}
+            mdi:weather-snowy
+          {% elif is_state("sensor.dark_sky_icon_6", "wind") %}
+            mdi:weather-windy
+          {% elif is_state("sensor.dark_sky_icon_6", "fog") %}
+            mdi:weather-fog
+          {% elif is_state("sensor.dark_sky_icon_6", "partly-cloudy-day") %}
+            mdi:weather-partlycloudy
+          {% elif is_state("sensor.dark_sky_icon_6", "partly-cloudy-night") %}
+            mdi:weather-partlycloudy
+          {% else %}
+            error
+          {% endif %}
+
+      forecast_7:
+        friendly_name: 'Seventh'
+        value_template: >
+            {{states.sensor.dark_sky_daytime_high_temperature_7.state|round(0)}}°/{{states.sensor.dark_sky_overnight_low_temperature_7.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_7.state|round(0)}}%
+        icon_template: >-
+          {% if is_state("sensor.dark_sky_icon_7", "clear-day") %}
+            mdi:weather-sunny
+          {% elif is_state("sensor.dark_sky_icon_7", "clear-night") %}
+            mdi:weather-night
+          {% elif is_state("sensor.dark_sky_icon_7", "cloudy") %}
+            mdi:weather-cloudy   
+          {% elif is_state("sensor.dark_sky_icon_7", "rain") %}
+            mdi:weather-pouring        
+          {% elif is_state("sensor.dark_sky_icon_7", "sleet") %}
+            mdi:weather-snowy-rain 
+          {% elif is_state("sensor.dark_sky_icon_7", "snow") %}
+            mdi:weather-snowy
+          {% elif is_state("sensor.dark_sky_icon_7", "wind") %}
+            mdi:weather-windy
+          {% elif is_state("sensor.dark_sky_icon_7", "fog") %}
+            mdi:weather-fog
+          {% elif is_state("sensor.dark_sky_icon_7", "partly-cloudy-day") %}
+            mdi:weather-partlycloudy
+          {% elif is_state("sensor.dark_sky_icon_7", "partly-cloudy-night") %}
+            mdi:weather-partlycloudy
+          {% else %}
+            error
+          {% endif %}
+          
+  - platform: template
+    sensors:
+       front_door_sensor_battery:
+         friendly_name: "Front Door Sensor Battery"
+         unit_of_measurement: '%'
+         value_template: '{{ states.binary_sensor.door_window_sensor_158d00024670ee.attributes.battery_level|int }}'
+         icon_template: >
+           {% set battery_level = states.binary_sensor.door_window_sensor_158d00024670ee.attributes['battery_level']|default(0)|int %}
+           {% set battery_round = (battery_level / 10) |int * 10 %}
+           {% if battery_round >= 100 %}
+             mdi:battery
+           {% elif battery_round > 0 %}
+             mdi:battery-{{ battery_round }}
+           {% else %}
+             mdi:battery-alert
+           {% endif %}
+       motion_sensor_battery:
+         friendly_name: "Motion Sensor Battery - Dining"
+         unit_of_measurement: '%'
+         value_template: '{{ states.binary_sensor.motion_sensor_158d0002333c98.attributes.battery_level|int }}'
+         icon_template: >
+           {% set battery_level = states.binary_sensor.motion_sensor_158d0002333c98.attributes['battery_level']|default(0)|int %}
+           {% set battery_round = (battery_level / 10) |int * 10 %}
+           {% if battery_round >= 100 %}
+             mdi:battery
+           {% elif battery_round > 0 %}
+             mdi:battery-{{ battery_round }}
+           {% else %}
+             mdi:battery-alert
+           {% endif %}
+       light_switch_battery:
+         friendly_name: "Light Switch Battery"
+         unit_of_measurement: '%'
+         value_template: '{{ states.binary_sensor.switch_158d00023f4835.attributes.battery_level|int }}'
+         icon_template: >
+           {% set battery_level = states.binary_sensor.switch_158d00023f4835.attributes['battery_level']|default(0)|int %}
+           {% set battery_round = (battery_level / 10) |int * 10 %}
+           {% if battery_round >= 100 %}
+             mdi:battery
+           {% elif battery_round > 0 %}
+             mdi:battery-{{ battery_round }}
+           {% else %}
+             mdi:battery-alert
+           {% endif %}
+       climate_sensor_battery:
+         friendly_name: "Climate Sensor Battery"
+         unit_of_measurement: '%'
+         value_template: '{{ states.sensor.temperature_158d000247eb48.attributes.battery_level|int }}'
+         icon_template: >
+           {% set battery_level = states.sensor.temperature_158d000247eb48.attributes['battery_level']|default(0)|int %}
+           {% set battery_round = (battery_level / 10) |int * 10 %}
+           {% if battery_round >= 100 %}
+             mdi:battery
+           {% elif battery_round > 0 %}
+             mdi:battery-{{ battery_round }}
+           {% else %}
+             mdi:battery-alert
+           {% endif %}
+       warmer_outside:
+         friendly_name: "Warmer Outside"
+         value_template: >-
+           {% if (states.sensor.temperature_158d000247eb48.state) | float < (states.sensor.bom_lidcombe_air_temp_c.state) | float %}
+             Yes           
+           {% else %}
+             No
+           {% endif %}
+       leo_phone_battery:
+         unit_of_measurement: '%'
+         value_template: '{{ states.device_tracker.google_maps_101323708870758365845.attributes.battery_level|int }}'
+         icon_template: >
+           {% set battery_level = states.device_tracker.google_maps_101323708870758365845.attributes['battery_level']|default(0)|int %}
+           {% set battery_round = (battery_level / 10) |int * 10 %}
+           {% if battery_round >= 100 %}
+             mdi:battery
+           {% elif battery_round > 0 %}
+             mdi:battery-{{ battery_round }}
+           {% else %}
+             mdi:battery-alert
+           {% endif %}           
+           
+  - platform: cert_expiry
+    host: hassleonidas.duckdns.org
+    port: 8123
+
+  - platform: command_line
+    name: CPU Temperature
+    command: "cat /sys/class/thermal/thermal_zone0/temp"
+    # If errors occur, remove degree symbol below
+    unit_of_measurement: "°C"
+    value_template: '{{ value | multiply(0.001) | round(1) }}'
+
+  - platform: google_travel_time
+    name: Rebecca - Time to Work - Driving
+    api_key: !secret google_travel_key
+    origin: place_id:EjA4LzEgUmFpbHdheSBQYXJhZGUsIExpZGNvbWJlIE5TVyAyMTQxLCBBdXN0cmFsaWEiHRobChYKFAoSCUVO-Q6kvBJrEeP5mqA66y5ZEgE4
+    destination: place_id:ChIJBwmoEQmmEmsRxg1kjgOOzK8
+    scan_interval: 450
+    
+  - platform: google_travel_time
+    name: Rebecca - Time to Work - Transit
+    api_key: !secret google_travel_key
+    origin: place_id:EjA4LzEgUmFpbHdheSBQYXJhZGUsIExpZGNvbWJlIE5TVyAyMTQxLCBBdXN0cmFsaWEiHRobChYKFAoSCUVO-Q6kvBJrEeP5mqA66y5ZEgE4
+    destination: place_id:ChIJBwmoEQmmEmsRxg1kjgOOzK8    
+    options:
+      mode: transit
+    scan_interval: 450  
+      
+  - platform: google_travel_time
+    name: Leo - Time to Work - Transit
+    api_key: !secret google_travel_key
+    origin: place_id:EjA4LzEgUmFpbHdheSBQYXJhZGUsIExpZGNvbWJlIE5TVyAyMTQxLCBBdXN0cmFsaWEiHRobChYKFAoSCUVO-Q6kvBJrEeP5mqA66y5ZEgE4
+    destination: place_id:ChIJxQSmdz-uEmsR_4LsEz7wwFg
+    options:
+      mode: transit
+    scan_interval: 450 
+
+  - platform: transport_nsw
+    name: 'T1-Lidcombe-City-P1'
+    stopid: '2141311'
+    route: 'T1 North Shore, Northern & Western Line'
+    apikey: !secret transport_nsw_key
+    
+  - platform: transport_nsw
+    name: 'T2-Lidcombe-City-P1'
+    stopid: '2141311'
+    route: 'T2 Inner West & Leppington Line'
+    apikey: !secret transport_nsw_key    
+    
+  - platform: transport_nsw
+    name: 'T1-Lidcombe-City-P3'
+    stopid: '2141313'
+    route: 'T1 North Shore, Northern & Western Line'
+    apikey: !secret transport_nsw_key
+
+  - platform: transport_nsw
+    name: 'T2-Lidcombe-City-P3'
+    stopid: '2141313'
+    route: 'T2 Inner West & Leppington Line'
+    apikey: !secret transport_nsw_key    
+
+  - platform: filesize
+    file_paths:
+      - /config/home-assistant_v2.db
+  # - platform: template
+    # sensors:
+      # leo_home:
+        # value_template:
+          # "{% if is_state('binary_sensor.leo_presence', 'on') %}
+          # home
+          # {% else %}
+          # not_home
+          # {% endif %}"
+        # friendly_name: Leo
+        # entity_picture_template: https://lh4.googleusercontent.com/-VJOqTYova8I/AAAAAAAAAAI/AAAAAAAAiCQ/Ev_rhs1_a9A/photo.jpg

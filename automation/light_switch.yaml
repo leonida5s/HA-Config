@@ -1,0 +1,106 @@
+- alias: Toggle the lights on single press
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d00023f4835
+      click_type: single
+  action:
+     - service: light.turn_on
+       entity_id: light.living,light.dining
+       data:
+         brightness: 185
+         color_temp: 285
+     - service: light.turn_on    
+       entity_id: light.yeelight_rgb_34ce008b8059
+       data:
+         brightness: 51
+         color_temp: 332
+     - service: switch.turn_off
+       entity_id: switch.backlight
+     - service: light.turn_on
+       entity_id: light.yeelight_rgb_34ce008ce5a1
+       data:
+         color_temp: 312
+         brightness: 204
+    
+- alias: Toggle lights off on double click
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d00023f4835
+      click_type: double
+  action:
+    - service: light.turn_off
+      entity_id: group.all_lights
+    - service: switch.turn_off
+      entity_id: switch.backlight
+
+- alias: Night lights on long press
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d00023f4835
+      click_type: long_click_press
+  action:
+    - service: light.turn_off
+      entity_id: light.living,light.dining,light.kitchen
+      data:
+        transition: 5
+    - service: light.turn_on
+      entity_id: light.yeelight_rgb_34ce008ce5a1
+      data:
+        brightness: 204
+        color_temp: 312
+    - service: light.turn_on
+      entity_id: light.yeelight_rgb_34ce008b8059
+      data:
+        brightness: 2.5500000000000003
+        color_temp: 344
+        
+- alias: Backlight On when TV on when dark
+  trigger: 
+    platform: state
+    entity_id: 
+      - media_player.samsung_tv_remote
+      - sun.sun
+      - light.living
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: media_player.dancing_groot
+        state: 'off'
+      - condition: state
+        entity_id: sun.sun
+        state: below_horizon
+      - condition: state
+        entity_id: light.living
+        state: 'off'
+      - condition: state
+        entity_id: light.yeelight_rgb_34ce008ce5a1
+        state: 'on'        
+  action:
+    - service: switch.turn_on
+      entity_id: switch.backlight
+      
+- alias: Backlight Off when TV off
+  trigger: 
+    platform: state
+    entity_id: 
+      - media_player.dancing_groot
+      - switch.backlight
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: switch.backlight 
+        state: 'on'
+      - condition: state
+        entity_id: media_player.dancing_groot
+        state: 'unavailable'
+  action:
+    - service: switch.turn_off
+      entity_id: switch.backlight

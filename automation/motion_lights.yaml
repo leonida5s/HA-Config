@@ -1,0 +1,154 @@
+- alias: If there is dining motion when dark turn on the light
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d0002333c98
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: '{{ states("sensor.illumination_7811dcfd7844")|int < 550 }}'
+      - condition: time
+        after: '07:00:00'
+        before: '21:00:00'
+  action:
+    - service: light.turn_on
+      entity_id: light.dining
+      data:
+        brightness: 185
+        color_temp: 285
+    - service: light.turn_on
+      entity_id: light.kitchen
+      data:
+        brightness: 231
+        color_temp: 250
+
+- alias: If there is dining motion after 10pm turn on warm light
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d0002333c98
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: '{{ states("sensor.illumination_7811dcfd7844")|int < 550 }}'
+      - condition: time
+        after: '21:00:00'
+        before: '07:00:00'
+  action:
+    - service: light.turn_on
+      entity_id: light.dining
+      data:
+        brightness: 185
+        color_temp: 285
+    - service: light.turn_on
+      entity_id: light.kitchen
+      data:
+        brightness: 158
+        color_temp: 333        
+        
+- alias: If there is living motion when dark turn on the light
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dlink_motion_sensor
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: light.yeelight_rgb_34ce008ce5a1
+        state: 'off'
+      #- condition: state
+        #entity_id: media_player.samsung_tv_remote
+        #state: 'off'
+      - condition: template
+        value_template: '{{ states("sensor.illumination_7811dcfd7844")|int < 150 }}'        
+      # - condition: or  # 'when dark' condition: either after sunset or before sunrise
+        # conditions:
+          # - condition: sun
+            # after: sunset
+          # - condition: sun
+            # before: sunrise
+  action:
+    - service: light.turn_on
+      entity_id: light.living
+      data:
+        brightness: 185
+        color_temp: 285        
+    # - service: automation.turn_on
+      # data:
+        # entity_id: automation.if_there_is_no_motion_for_5_minutes_turn_off_the_lights
+        
+- alias: If there is no dining motion for 5 minutes turn off the light
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d0002333c98
+    from: 'on'
+    to: 'off'
+    for:
+      minutes: 5
+  # condition:
+    # condition: and
+    # conditions:
+      # - condition: state
+        # entity_id: media_player.samsung_tv_remote
+        # state: 'off'
+      # - condition: state
+        # entity_id: binary_sensor.motion_sensor_158d0002333c98
+        # state: 'off'
+  action:
+    - service: light.turn_off
+      entity_id: light.dining,light.kitchen
+    #- service: switch.turn_off
+     # entity_id: switch.backlight
+    # - service: automation.turn_off
+      # data:
+        # entity_id: automation.if_there_is_no_motion_for_5_minutes_turn_off_the_lights
+
+- alias: If there is no living motion for 5 minutes turn off the light
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dlink_motion_sensor
+    from: 'on'
+    to: 'off'
+    for:
+      minutes: 5
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: media_player.samsung_tv_remote
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.dlink_motion_sensor
+        state: 'off'
+  action:
+    - service: light.turn_off
+      entity_id: light.living,light.yeelight_rgb_34ce008ce5a1,light.yeelight_rgb_34ce008b8059
+    - service: switch.turn_off
+      entity_id: switch.backlight
+
+- alias: If the door opens when dark turn on the lights
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_window_sensor_158d00024670ee
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: '{{ (((as_timestamp(now()) - as_timestamp(states.binary_sensor.leo_presence.last_changed)) / 60) < 5) and (((as_timestamp(now()) - as_timestamp(states.binary_sensor.rebecca_presence.last_changed)) / 60) < 5) }}'    
+      - condition: or  # 'when dark' condition: either after sunset or before sunrise
+        conditions:
+          - condition: sun
+            after: sunset
+          - condition: sun
+            before: sunrise
+  action:
+    service: light.turn_on
+    entity_id: light.living,light.dining

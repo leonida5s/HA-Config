@@ -1,0 +1,68 @@
+  - platform: bayesian
+    prior: 0.5
+    name: 'Leo Presence'
+    probability_threshold: 0.9
+    observations:
+      - entity_id: 'device_tracker.leo_pixel2xl'
+        prob_given_true: 0.9
+        prob_given_false: 0.1
+        platform: 'state'
+        to_state: 'home'
+      - entity_id: 'device_tracker.google_maps_101323708870758365845'
+        prob_given_true: 0.9
+        prob_given_false: 0.2
+        platform: 'state'
+        to_state: 'home'      
+      - entity_id: 'device_tracker.pixel_2_xl'
+        prob_given_true: 0.9
+        prob_given_false: 0.1
+        platform: 'state'
+        to_state: 'home'
+  - platform: bayesian
+    prior: 0.5
+    name: 'Rebecca Presence'
+    probability_threshold: 0.9
+    observations:
+      - entity_id: 'device_tracker.rebecca_pixel2'
+        prob_given_true: 0.9
+        prob_given_false: 0.1
+        platform: 'state'
+        to_state: 'home'
+      - entity_id: 'device_tracker.bec_pixel_2'
+        prob_given_true: 0.9
+        prob_given_false: 0.1
+        platform: 'state'
+        to_state: 'home'
+  - platform: dlink_motion_sensor
+    host: 192.168.0.184
+    password: !secret dlink_motion       
+  - platform: template  
+    sensors:
+      entity_picture_colour_leo:
+        device_class: presence
+        value_template: >-
+           {% if is_state('binary_sensor.leo_presence', 'on') %}
+             true
+           {% else %}
+             false
+           {% endif %}        
+        entity_picture_template: >-
+          {% if is_state('binary_sensor.leo_presence', 'on') %}
+            /local/Leo_COVER.jpg
+          {% else %}
+            /local/Leo_COVER_BW.jpg
+          {% endif %}
+      entity_picture_colour_rebecca:
+        device_class: presence
+        value_template: >-
+           {% if is_state('binary_sensor.rebecca_presence', 'on') %}
+             true
+           {% else %}
+             false
+           {% endif %} 
+        entity_picture_template: >-
+          {% if is_state('binary_sensor.rebecca_presence', 'on') %}
+            /local/Bec_COVER.jpg
+          {% else %}
+            /local/Bec_COVER_BW.jpg
+          {% endif %}          

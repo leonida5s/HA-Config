@@ -1,0 +1,120 @@
+- alias: If the door opens when not home send notification
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_window_sensor_158d00024670ee
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: state
+    entity_id: binary_sensor.leo_presence
+    state: 'off'
+  action:
+    service: notify.html5_notification
+    data:
+      message: "Front door opened"
+      title: "Home Security Alert"
+      
+- alias: If dining motion detected when not home send notification
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d0002333c98
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.leo_presence
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.rebecca_presence
+        state: 'off'
+  action:
+    - service: notify.html5_notification
+      data:
+        message: "Motion detected"
+        title: "Home Security Alert"
+
+- alias: If dining motion detected when not home play speech warning
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d0002333c98
+    from: 'off'
+    to: 'on'
+  action:
+    - delay: '00:00:10'
+    - condition: state
+      entity_id: binary_sensor.leo_presence
+      state: 'off'
+    - condition: state
+      entity_id: binary_sensor.rebecca_presence
+      state: 'off'   
+    - service: media_player.volume_set
+      data_template:
+        entity_id: media_player.home_group
+        volume_level: 0.5
+    - service: tts.google_say
+      entity_id: media_player.home_group
+      data:
+        message: 'Unauthorized presence detected. Vacate the premises immediately'
+        
+- alias: If living motion detected when not home send notification
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dlink_motion_sensor
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.leo_presence
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.rebecca_presence
+        state: 'off'
+  action:
+    - service: notify.html5_notification
+      data:
+        message: "Motion detected"
+        title: "Home Security Alert"
+
+- alias: If living motion detected when not home play speech warning
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dlink_motion_sensor
+    from: 'off'
+    to: 'on'
+  action:
+    - delay: '00:00:10'
+    - condition: state
+      entity_id: binary_sensor.leo_presence
+      state: 'off'
+    - condition: state
+      entity_id: binary_sensor.rebecca_presence
+      state: 'off'   
+    - service: media_player.volume_set
+      data_template:
+        entity_id: media_player.home_group
+        volume_level: 0.5
+    - service: tts.google_say
+      entity_id: media_player.home_group
+      data:
+        message: 'Unauthorized presence detected. Vacate the premises immediately'        
+        
+- alias: Take photo when front door opens
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_window_sensor_158d00024670ee
+    from: 'off'
+    to: 'on'
+  action:
+    - delay: '00:00:04'
+    - service: mqtt.publish
+      data:
+        topic: 'zanzito/nexus7/cmd/take_picture'
+    - delay: '00:00:10'     
+    - service: camera.snapshot
+      data:
+        entity_id: camera.nexus_7_camera
+        filename: '/config/photos/front_door_capture_{{ now().strftime("%Y%m%d-%H%M%S") }}.jpg'
