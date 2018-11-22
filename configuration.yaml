@@ -2,7 +2,7 @@
 #                                                 #
 #     Home Assistant Main Configuration File      #
 #                                                 #
-###################################################
+####################################################
 
 homeassistant:
   name: Home
