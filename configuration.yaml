@@ -1,0 +1,138 @@
+###################################################
+#                                                 #
+#     Home Assistant Main Configuration File      #
+#                                                 #
+###################################################
+
+homeassistant:
+  name: Home
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  elevation: !secret home_elevation
+  unit_system: metric
+  time_zone: !secret home_timezone
+  customize: !include customize.yaml
+  # may utlise /tmp this for camera photos that would be cleared on boot
+  whitelist_external_dirs:
+    - /config/photos
+    - /config
+
+###################################################
+#                                                 #
+#                     Panel                       #
+#                                                 #
+################################################### 
+
+panel_iframe:
+  configurator:
+    title: Configurator
+    icon: mdi:wrench
+    url: !secret iframe_configurator
+  ide:
+    title: IDE
+    icon: mdi:wrench
+    url: !secret iframe_ide    
+  pihole:
+    title: Pi-hole
+    icon: mdi:block-helper
+    url: !secret iframe_pihole
+    
+####################################################
+#                                                  #
+#                     Enables                      #
+#                                                  #
+####################################################    
+
+config:
+
+http:
+  # Secrets are defined in the file secrets.yaml
+  api_password: !secret http_password
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  # Required for Google TTS
+  base_url: !secret http_base_url
+  ssl_certificate: /ssl/fullchain.pem
+  ssl_key: /ssl/privkey.pem
+
+updater:
+# Discover some devices automatically
+discovery:
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+# Enables support for tracking state changes over time
+history:
+# View all events in a logbook
+logbook:
+# Enables a map showing the location of tracked devices
+map:
+
+python_script:
+
+####################################################
+#                                                  #
+#                 Customizations                   #
+#                                                  #
+####################################################
+
+frontend:
+  themes: !include themes.yaml
+
+####################################################
+#                                                  #
+#                 Sun                              #
+#                                                  #
+####################################################
+
+sun:
+
+####################################################
+#                                                  #
+#                       TTS                        #
+#                                                  #
+####################################################
+
+tts:
+  - platform: google
+
+####################################################
+#                                                  #
+#                      Cloud                       #
+#                                                  #
+####################################################
+
+cloud:
+
+####################################################
+#                                                  #
+#                      MQTT                        #
+#                                                  #
+####################################################
+
+mqtt:
+  password: !secret http_password
+
+####################################################
+#                                                  #
+#                    Includes                      #
+#                                                  #
+####################################################
+
+group: !include groups.yaml
+automation: !include_dir_merge_list automation
+script: !include scripts.yaml
+scene: !include scenes.yaml
+sensor: !include includes/sensors.yaml
+light: !include includes/light.yaml
+xiaomi_aqara: !include includes/xiaomi.yaml
+switch: !include includes/switch.yaml
+device_tracker: !include includes/device_tracker.yaml
+notify: !include includes/notify.yaml
+media_player: !include includes/media_players.yaml
+camera: !include includes/cameras.yaml
+recorder: !include recorder.yaml
+shell_command: !include shell_command.yaml
+zone: !include includes/zones.yaml
+binary_sensor: !include includes/binary_sensors.yaml
+geo_location: !include includes/geo_locations.yaml
+input_select: !include includes/input_select.yaml
+display: !include includes/displays.yaml

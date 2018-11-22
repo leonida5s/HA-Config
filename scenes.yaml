@@ -1,0 +1,65 @@
+  - name: Night Lights
+    entities:
+      light.yeelight_rgb_34ce008ce5a1: 
+        state: on
+        brightness: 204
+        color_temp: 312
+      light.yeelight_rgb_34ce008b8059:
+        state: on
+        brightness: 2.5500000000000003
+        color_temp: 344
+      light.dining:
+        state: off
+        transition: 5        
+      light.living:
+        state: off
+        transition: 5       
+      light.kitchen:
+        state: off
+        transition: 5      
+  - name: Main Lights
+    entities:
+      light.dining: 
+        state: on
+        brightness: 185
+        color_temp: 285
+      light.living:
+        state: on
+        brightness: 185
+        color_temp: 285
+      light.yeelight_rgb_34ce008ce5a1: off
+      light.yeelight_rgb_34ce008b8059: off
+      switch.backlight: off
+  - name: Showtime Lights
+    entities:
+      light.living: 
+        state: off
+        transition: 10
+      light.dining:
+        state: off
+        transition: 10
+      light.yeelight_rgb_34ce008ce5a1:
+        state: on
+        brightness: 128
+        rgb_color: [102,102,255]
+      light.yeelight_rgb_34ce008b8059:
+        state: on
+        brightness: 75
+        color_temp: 312
+      switch.backlight: on
+  - name: All Lights Off
+    entities:
+      group.all_lights: off
+      switch.backlight: off
+  - name: Bright Lights
+    entities:
+      light.dining: 
+        state: on
+        brightness: 217
+        color_temp: 285
+      light.living:
+        state: on
+        brightness: 217
+        color_temp: 285
+
+      

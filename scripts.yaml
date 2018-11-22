@@ -1,0 +1,21 @@
+# living_motion_lights:
+  # sequence:
+    # -  condition: and
+       # conditions:
+         # - condition: state
+           # entity_id: light.yeelight_rgb_34ce008ce5a1
+           # state: 'off'
+         # - condition: state
+           # entity_id: media_player.samsung_tv_remote
+           # state: 'off'
+         # - condition: or  # 'when dark' condition: either after sunset or before sunrise
+           # conditions:
+             # - condition: sun
+               # after: sunset
+             # - condition: sun
+               # before: sunrise
+    # - service: light.turn_on
+      # entity_id: light.living #,light.dining 
+      # data:
+        # brightness: 156
+        # color_temp: 285          
