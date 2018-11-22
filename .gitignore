@@ -8,7 +8,6 @@
 !*.md
 !automation
 !includes
-!*custom_components
 
 # Ignore folders.
 .storage
